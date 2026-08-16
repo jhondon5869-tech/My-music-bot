@@ -1,7 +1,7 @@
 import asyncio
 import sys
 
-# Event loop fix - Sabse pehle yeh chahiye
+# Event loop fix
 if sys.platform == 'win32':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
@@ -13,16 +13,7 @@ except RuntimeError:
 
 from pyrogram import Client, filters, idle
 from pytgcalls import PyTgCalls
-
-# PyTgCalls import fix - Multiple options try karega
-try:
-    from pytgcalls.types import AudioPiped
-except ImportError:
-    try:
-        from pytgcalls.types.input_stream import AudioPiped
-    except ImportError:
-        from pytgcalls import AudioPiped
-
+from pytgcalls.types import InputAudioStream  # v1.2.9 ka import
 import yt_dlp
 import config
 
@@ -80,9 +71,10 @@ async def play_music(client, message):
     try:
         await m.edit("🎵 Voice Chat me connect kiya ja raha hai...")
         
-        await call_py.play(
+        # v1.2.9 syntax
+        await call_py.join_group_call(
             chat_id,
-            AudioPiped(stream_url)
+            InputAudioStream(stream_url)
         )
         await m.edit(f"▶️ Abhi Play ho raha hai: {song_title}")
     except Exception as e:
@@ -92,7 +84,7 @@ async def main():
     await app.start()
     await assistant.start()
     await call_py.start()
-    print("🤖 Bot aur Assistant Successfully Start Ho Gaye Hain!")
+    print("🤖 Bot Successfully Start Ho Gaya!")
     await idle()
 
 if __name__ == "__main__":
