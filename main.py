@@ -1,7 +1,7 @@
 import asyncio
 import sys
 
-# Event loop setup
+# Event loop fix - Sabse pehle yeh chahiye
 if sys.platform == 'win32':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
@@ -13,7 +13,16 @@ except RuntimeError:
 
 from pyrogram import Client, filters, idle
 from pytgcalls import PyTgCalls
-from pytgcalls.types.input_stream import InputAudioStream  # Sahi import
+
+# PyTgCalls import fix - Multiple options try karega
+try:
+    from pytgcalls.types import AudioPiped
+except ImportError:
+    try:
+        from pytgcalls.types.input_stream import AudioPiped
+    except ImportError:
+        from pytgcalls import AudioPiped
+
 import yt_dlp
 import config
 
@@ -70,13 +79,14 @@ async def play_music(client, message):
 
     try:
         await m.edit("🎵 Voice Chat me connect kiya ja raha hai...")
-        await call_py.join_group_call(
+        
+        await call_py.play(
             chat_id,
-            InputAudioStream(stream_url)  # Direct URL pass karein
+            AudioPiped(stream_url)
         )
         await m.edit(f"▶️ Abhi Play ho raha hai: {song_title}")
     except Exception as e:
-        await m.edit(f"⚠️ VC me join hone me samasya aayi: {str(e)}")
+        await m.edit(f"⚠️ Error: {str(e)}")
 
 async def main():
     await app.start()
