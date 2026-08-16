@@ -1,7 +1,7 @@
 import asyncio
 import sys
 
-# IMPORTANT: Event loop sabse pehle create karein (imports se pehle)
+# Event loop setup
 if sys.platform == 'win32':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
@@ -11,10 +11,9 @@ except RuntimeError:
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
-# Ab baaki imports karein
 from pyrogram import Client, filters, idle
 from pytgcalls import PyTgCalls
-from pytgcalls.types import InputAudioStream
+from pytgcalls.types.input_stream import InputAudioStream  # Sahi import
 import yt_dlp
 import config
 
@@ -73,7 +72,7 @@ async def play_music(client, message):
         await m.edit("🎵 Voice Chat me connect kiya ja raha hai...")
         await call_py.join_group_call(
             chat_id,
-            InputAudioStream(stream_url)
+            InputAudioStream(stream_url)  # Direct URL pass karein
         )
         await m.edit(f"▶️ Abhi Play ho raha hai: {song_title}")
     except Exception as e:
