@@ -1,14 +1,22 @@
 import asyncio
 import sys
+
+# IMPORTANT: Event loop sabse pehle create karein (imports se pehle)
+if sys.platform == 'win32':
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+try:
+    loop = asyncio.get_running_loop()
+except RuntimeError:
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+# Ab baaki imports karein
 from pyrogram import Client, filters, idle
 from pytgcalls import PyTgCalls
 from pytgcalls.types import InputAudioStream
 import yt_dlp
 import config
-
-# Windows ke liye event loop policy set karein (optional)
-if sys.platform == 'win32':
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 app = Client(
     "MusicBot",
@@ -79,10 +87,4 @@ async def main():
     await idle()
 
 if __name__ == "__main__":
-    # Event loop explicitly create karein (Python 3.10+ fix)
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    try:
-        loop.run_until_complete(main())
-    finally:
-        loop.close()
+    loop.run_until_complete(main())
