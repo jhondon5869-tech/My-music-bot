@@ -23,12 +23,12 @@ call_py = PyTgCalls(assistant)
 
 @app.on_message(filters.command("start"))
 async def start_cmd(client, message):
-    await message.reply_text("👋 Hello! Main music bot hoon. Kisi bhi group me mujhe aur mere assistant ko add karein aur **/play [song name]** likhein.")
+    await message.reply_text("👋 Hello! Main music bot hoon. Kisi bhi group me mujhe aur mere assistant ko add karein aur /play [song name] likhein.")
 
 @app.on_message(filters.command("play"))
 async def play_music(client, message):
     if len(message.command) < 2:
-        await message.reply_text("❌ Kripya gaane ka naam likhein. Jaise: `/play Faded`")
+        await message.reply_text("❌ Kripya gaane ka naam likhein. Jaise: /play Faded")
         return
 
     query = " ".join(message.command[1:])
@@ -62,7 +62,7 @@ async def play_music(client, message):
             chat_id,
             InputAudioStream(stream_url)
         )
-        await m.edit(f"▶️ **Abhi Play ho raha hai:** {song_title}")
+        await m.edit(f"▶️ Abhi Play ho raha hai: {song_title}")
     except Exception as e:
         await m.edit(f"⚠️ VC me join hone me samasya aayi: {str(e)}")
 
@@ -73,5 +73,5 @@ async def main():
     print("🤖 Bot aur Assistant Successfully Start Ho Gaye Hain!")
     await idle()
 
-if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(main())
+if name == "main":
+    asyncio.run(main())
